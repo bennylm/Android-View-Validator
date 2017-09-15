@@ -13,8 +13,6 @@ import java.util.regex.Pattern;
 
 import io.launchowl.viewvalidation.Criteria;
 import io.launchowl.viewvalidation.Observer;
-import io.launchowl.viewvalidation.TestCompleteListener;
-import io.launchowl.viewvalidation.ValidationCompleteListener;
 import io.launchowl.viewvalidation.Validator;
 
 
@@ -35,32 +33,25 @@ public class LoginActivity extends AppCompatActivity {
      * Setup the form validation
      */
     void initFormValidation() {
-        // Create an instance of the Validator for the EditText view with an
-        // id of "user_name".
+        // Create an instance of the Validator for the username field
         EditText userNameEditText = (EditText) findViewById(R.id.user_name);
-        final Validator<EditText> userNameValidator = new Validator<>(userNameEditText, new Criteria<EditText>() {
-            Validator.ValidationResult validationResult;
-
-            @Override
-            public void test(EditText editText, final TestCompleteListener testCompleteListener) {
-                validationResult = Validator.ValidationResult.Valid;
-                String userName = editText.getText().toString();
-
-                // Make sure it's alphanumeric
-                if (!Pattern.matches("\"^[a-zA-Z0-9]*$\"", userName)) {
-                    testCompleteListener.onComplete(validationResult);
+        final Validator<EditText> userNameValidator = new Validator<>(new Criteria<EditText>(userNameEditText)
+            .asyncTest(new Criteria.AsyncCondition<EditText>() {
+                @Override
+                public void evaluate(final Criteria<EditText> criteria, EditText view) {
+                    UserRepository userRepository = new UserRepository();
+                    userRepository.getUser(view.getText().toString(), new UserRepository.OnuserRetrievedListener() {
+                        @Override
+                        public void onUserRetrieved(User user) {
+                            criteria.asyncConditionComplete(user == null);
+                        }
+                    });
                 }
+            })
+        );
 
-                // Make sure it's available
-                UserGetterAsyncTask.getUser(editText.getText().toString(), new UserGetterAsyncTask.OnUserRetrievedListener() {
-                    @Override
-                    public void onUserRetrieved(User user) {
-                        validationResult = (user == null ? Validator.ValidationResult.Valid : Validator.ValidationResult.Invalid);
-                        testCompleteListener.onComplete(validationResult);
-                    }
-                });
-            }
-        });
+        // Create an observer for the continue button that will enable/disable it based
+        // on the username field containing valid data
         Observer<Button> continueButtonObserver = new Observer<Button>((Button) findViewById(R.id.continue_button)) {
             @Override
             protected void onValidationComplete(Button view, Validator.ValidationResult validationResult) {
@@ -74,6 +65,8 @@ public class LoginActivity extends AppCompatActivity {
             }
         };
 
+        // Create an observer for the username status message that will display a
+        // message stating whether the username is available
         Observer<TextView> userNameStatusObserver = new Observer<TextView>((TextView) findViewById(R.id.username_status)) {
             @Override
             protected void onValidationComplete(TextView view, Validator.ValidationResult validationResult) {
@@ -89,7 +82,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         };
 
-        // Set the observers that will listen for the results
+        // Add the observers
         userNameValidator.observe(userNameStatusObserver, continueButtonObserver);
 
         // Listen for text being modified in the user name view.
@@ -109,20 +102,16 @@ public class LoginActivity extends AppCompatActivity {
                 // validate the input
                 if (s.toString().length() > 3) {
                     userNameValidator.validate();
+                } else {
+                    resetViews();
                 }
             }
         });
     }
 
-    private static class UserGetterAsyncTask {
-        static void getUser(String userName, OnUserRetrievedListener onUserRetrievedListener) {
-            UserRepository userRepository = new UserRepository();
-            onUserRetrievedListener.onUserRetrieved(userRepository.getUser(userName));
-        }
-
-        private interface OnUserRetrievedListener {
-            void onUserRetrieved(User user);
-        }
+    void resetViews() {
+        ((TextView) findViewById(R.id.username_status)).setText("");
+        findViewById(R.id.continue_button).setEnabled(false);
     }
 }
 

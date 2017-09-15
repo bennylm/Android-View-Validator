@@ -42,14 +42,8 @@ public class ValidatorTest {
     }
 
     @Test
-    public void addValidationObserver_ThreeObservers_AddThreeObservers() throws Exception {
-        Validator validator = new Validator<TextView>(mockTextView, new Criteria<TextView>() {
-            @Override
-            public void test(TextView TextView, TestCompleteListener testCompleteListener) {
-
-            }
-        }).limit(3);
-
+    public void observe_ThreeObservers_AddThreeObservers() throws Exception {
+        Validator validator = new Validator<EditText>(new Criteria<EditText>(mockEditText));
         validator.observe(mockButton1Observer, mockButton2Observer, mockButton3Observer);
 
         assertEquals(3, validator.getObservers().size());
@@ -70,30 +64,34 @@ public class ValidatorTest {
         when(mockEditText.getText()).thenReturn(mockEditable);
         when(mockEditable.toString()).thenReturn(validText);
 
-        Validator validator = new Validator<EditText>(mockEditText, new Criteria<EditText>() {
+       Validator validator = new Validator<EditText>(new Criteria<EditText>(mockEditText)
+        .test(new Criteria.Condition<EditText>() {
             @Override
-            public void test(EditText editText, TestCompleteListener testCompleteListener) {
-                assertEquals(validText, editText.getText().toString());
+            public boolean evaluate(EditText view) {
+                assertEquals(validText, view.getText().toString());
+
+                return false;
             }
-        });
+        })
+       );
 
         validator.validate();
     }
 
-    Observer mockButton1Observer = new Observer<Button>(mockButton1) {
+    private Observer mockButton1Observer = new Observer<Button>(mockButton1) {
         @Override
         public void onValidationComplete(Button button, Validator.ValidationResult validationResult) {
 
         }
     };
 
-    Observer mockButton2Observer = new Observer<Button>(mockButton2) {
+    private Observer mockButton2Observer = new Observer<Button>(mockButton2) {
         @Override
         public void onValidationComplete(Button button, Validator.ValidationResult validationResult) {
         }
     };
 
-    Observer mockButton3Observer = new Observer<Button>(mockButton3) {
+    private Observer mockButton3Observer = new Observer<Button>(mockButton3) {
         @Override
         public void onValidationComplete(Button button, Validator.ValidationResult validationResult) {
         }

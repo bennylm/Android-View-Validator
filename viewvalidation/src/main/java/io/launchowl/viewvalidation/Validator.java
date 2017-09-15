@@ -8,7 +8,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class Validator<T extends View> {
-    int limit = -1;
     Set<Observer> observers;
     T sourceView;
     Criteria<T> criteria;
@@ -17,7 +16,10 @@ public class Validator<T extends View> {
         Invalid
     }
 
-    public Validator() { }
+    public Validator(Criteria<T> criteria) {
+        this.observers = new HashSet<>();
+        this.criteria = criteria;
+    }
 
     public Validator(T sourceView, Criteria<T> criteria) {
         this.observers = new HashSet<>();
@@ -29,18 +31,11 @@ public class Validator<T extends View> {
         Collections.addAll(this.observers, observers);
     }
 
-    public Validator limit(int charLimit) {
-        this.limit = charLimit;
-        return this;
-    }
-
     public void validate() {
-        this.criteria.test(this.sourceView, new TestCompleteListener() {
+        this.criteria.evaluate(new Criteria.EvalCompleteListener() {
             @Override
             public void onComplete(ValidationResult validationResult) {
-                if (!(sourceView instanceof EditText) || (sourceView instanceof EditText && ((EditText) sourceView).getText().length() > limit)) {
-                    Notifier.notify(observers, validationResult);
-                }
+                Notifier.notify(observers, validationResult);
             }
         });
     }
