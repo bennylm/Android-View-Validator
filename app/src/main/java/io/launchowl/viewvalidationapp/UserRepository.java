@@ -12,7 +12,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class UserRepository {
     private final Set<User> users = new HashSet<>(Arrays.asList(
-       new User("realteal"), new User("drysandpiper"), new User("thunderousgull"), new User("regalkangaroo")
+       new User("realkiwi"), new User("happyorange"), new User("iceapple"), new User("coolblueberry")
     ));
 
     public void getUser(final String userName, final OnuserRetrievedListener onUuserRetrievedListener) {

@@ -6,7 +6,9 @@
     <string name="action_continue">Continue</string>
     <string name="success_available">Available</string>
     <string name="error_not_available">Not available</string>
+    <string name="error_invalid_username">Invalid username</string>
     <string name="title_activity_login2">Sign in</string>
+    <string name="empty_string"></string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
