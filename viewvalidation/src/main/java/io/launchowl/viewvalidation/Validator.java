@@ -7,7 +7,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-public class Validator<T extends View> {
+public class Validator<T extends View> implements Validation {
     Set<Observer> observers;
     T sourceView;
     Criteria<T> criteria;
@@ -18,12 +18,6 @@ public class Validator<T extends View> {
 
     public Validator(Criteria<T> criteria) {
         this.observers = new HashSet<>();
-        this.criteria = criteria;
-    }
-
-    public Validator(T sourceView, Criteria<T> criteria) {
-        this.observers = new HashSet<>();
-        this.sourceView = sourceView;
         this.criteria = criteria;
     }
 

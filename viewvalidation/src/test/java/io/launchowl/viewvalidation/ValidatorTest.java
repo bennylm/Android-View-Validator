@@ -51,7 +51,7 @@ public class ValidatorTest {
 
     @Test
     public void getView_ViewsToBeEqual_TextView() throws Exception {
-        Validator validator = new Validator<TextView>(mockTextView, null);
+        Validator validator = new Validator<TextView>(null);
 
         assertEquals(mockTextView, validator.getView());
     }
