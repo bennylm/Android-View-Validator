@@ -1,5 +1,8 @@
-package io.launchowl.viewvalidationapp;
+package io.launchowl.viewvalidation.sampleapp;
 
+/**
+ * A user.
+ */
 public class User {
     private String userName;
 

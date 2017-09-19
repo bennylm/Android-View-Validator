@@ -1,4 +1,4 @@
-package io.launchowl.viewvalidationapp;
+package io.launchowl.viewvalidation.sampleapp;
 
 import org.junit.Test;
 

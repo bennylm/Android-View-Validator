@@ -4,7 +4,7 @@ android {
     compileSdkVersion 25
     buildToolsVersion "26.0.0"
     defaultConfig {
-        applicationId "io.launchowl.viewvalidationapp"
+        applicationId "io.launchowl.viewvalidation.viewvalidationapp"
         minSdkVersion 23
         targetSdkVersion 25
         versionCode 1

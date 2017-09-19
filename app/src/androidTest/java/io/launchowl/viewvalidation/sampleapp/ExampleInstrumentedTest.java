@@ -1,4 +1,4 @@
-package io.launchowl.viewvalidationapp;
+package io.launchowl.viewvalidation.sampleapp;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("io.launchowl.viewvalidationapp", appContext.getPackageName());
+        assertEquals("io.launchowl.viewvalidation.viewvalidationapp", appContext.getPackageName());
     }
 }
