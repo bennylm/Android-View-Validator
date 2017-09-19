@@ -87,12 +87,12 @@ public class CriteriaTest {
         Criteria<EditText> criteria = new Criteria<EditText>(mockEditText);
         criteria.asyncTest(new Criteria.AsyncCondition<EditText>() {
             @Override
-            public void evaluate(Criteria<EditText> criteria, EditText view) {
+            public void evaluate(Criteria.AsyncConditionCompletionListener asyncConditionCompletionListener, EditText view) {
 
             }
         }).asyncTest(new Criteria.AsyncCondition<EditText>() {
             @Override
-            public void evaluate(Criteria<EditText> criteria, EditText view) {
+            public void evaluate(Criteria.AsyncConditionCompletionListener asyncConditionCompletionListener, EditText view) {
 
             }
         });
@@ -105,8 +105,9 @@ public class CriteriaTest {
         Criteria<EditText> criteria = new Criteria<EditText>(mockEditText);
         criteria.asyncTest(new Criteria.AsyncCondition<EditText>() {
             @Override
-            public void evaluate(final Criteria<EditText> criteria, EditText view) {
-                criteria.asyncConditionComplete(false);
+            public void evaluate(Criteria.AsyncConditionCompletionListener asyncConditionCompletionListener, EditText view) {
+                asyncConditionCompletionListener.complete(false);
+
             }
         }).test(new Criteria.Condition<EditText>() {
             @Override
@@ -128,13 +129,13 @@ public class CriteriaTest {
         Criteria<EditText> criteria = new Criteria<EditText>(mockEditText);
         criteria.asyncTest(new Criteria.AsyncCondition<EditText>() {
             @Override
-            public void evaluate(final Criteria<EditText> criteria, EditText view) {
-                criteria.asyncConditionComplete(true);
+            public void evaluate(Criteria.AsyncConditionCompletionListener asyncConditionCompletionListener, EditText view) {
+                asyncConditionCompletionListener.complete(true);
             }
         }).asyncTest(new Criteria.AsyncCondition<EditText>() {
             @Override
-            public void evaluate(final Criteria<EditText> criteria, EditText view) {
-                criteria.asyncConditionComplete(true);
+            public void evaluate(Criteria.AsyncConditionCompletionListener asyncConditionCompletionListener, EditText view) {
+                asyncConditionCompletionListener.complete(true);
             }
         });
 

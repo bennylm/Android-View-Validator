@@ -44,12 +44,12 @@ public class LoginActivity extends AppCompatActivity {
         final Validator<EditText> userNameAvailableValidator = new Validator<>(new Criteria<EditText>(userNameEditText)
             .asyncTest(new Criteria.AsyncCondition<EditText>() {
                 @Override
-                public void evaluate(final Criteria<EditText> criteria, EditText view) {
+                public void evaluate(final Criteria.AsyncConditionCompletionListener asyncConditionCompletionListener, EditText view) {
                     UserRepository userRepository = new UserRepository();
                     userRepository.getUser(view.getText().toString(), new UserRepository.OnuserRetrievedListener() {
                         @Override
                         public void onUserRetrieved(User user) {
-                            criteria.asyncConditionComplete(user == null);
+                            asyncConditionCompletionListener.complete(user == null);
                         }
                     });
                 }

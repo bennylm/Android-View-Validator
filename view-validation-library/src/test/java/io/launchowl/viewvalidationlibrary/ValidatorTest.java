@@ -1,4 +1,4 @@
-package io.launchowl.viewvalidation;
+package io.launchowl.viewvalidationlibrary;
 
 import android.text.Editable;
 import android.widget.Button;
@@ -50,13 +50,6 @@ public class ValidatorTest {
         validator.observe(mockButton1Observer, mockButton2Observer, mockButton3Observer);
 
         assertEquals(3, validator.getObservers().size());
-    }
-
-    @Test
-    public void getView_ViewsToBeEqual_TextView() throws Exception {
-        Validator validator = new Validator<TextView>(null);
-
-        assertEquals(mockTextView, validator.getView());
     }
 
 

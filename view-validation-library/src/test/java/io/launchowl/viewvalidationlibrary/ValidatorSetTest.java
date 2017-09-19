@@ -1,4 +1,4 @@
-package io.launchowl.viewvalidation;
+package io.launchowl.viewvalidationlibrary;
 
 import android.text.Editable;
 import android.widget.Button;
