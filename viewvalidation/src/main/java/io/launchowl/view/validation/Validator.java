@@ -1,7 +1,6 @@
-package io.launchowl.viewvalidation;
+package io.launchowl.view.validation;
 
 import android.view.View;
-import android.widget.EditText;
 
 import java.util.Collections;
 import java.util.HashSet;

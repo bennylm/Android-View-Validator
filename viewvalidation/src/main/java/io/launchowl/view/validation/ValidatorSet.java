@@ -1,4 +1,4 @@
-package io.launchowl.viewvalidation;
+package io.launchowl.view.validation;
 
 import java.util.Arrays;
 import java.util.Collections;

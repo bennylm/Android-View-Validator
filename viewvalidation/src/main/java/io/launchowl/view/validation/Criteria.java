@@ -1,13 +1,9 @@
-package io.launchowl.viewvalidation;
+package io.launchowl.view.validation;
 
-import android.os.AsyncTask;
 import android.view.View;
-import android.widget.EditText;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public class Criteria<T extends View> {

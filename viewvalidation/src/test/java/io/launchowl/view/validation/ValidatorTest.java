@@ -1,7 +1,6 @@
 package io.launchowl.viewvalidation;
 
 import android.text.Editable;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -12,6 +11,10 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.modules.junit4.PowerMockRunner;
+
+import io.launchowl.view.validation.Criteria;
+import io.launchowl.view.validation.Observer;
+import io.launchowl.view.validation.Validator;
 
 import static org.junit.Assert.assertEquals;
 import static org.powermock.api.mockito.PowerMockito.when;

@@ -12,18 +12,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import io.launchowl.viewvalidation.Criteria;
-import io.launchowl.viewvalidation.Observer;
-import io.launchowl.viewvalidation.Validator;
-import io.launchowl.viewvalidation.ValidatorSet;
+import io.launchowl.view.validation.Criteria;
+import io.launchowl.view.validation.Observer;
+import io.launchowl.view.validation.Validator;
+import io.launchowl.view.validation.ValidatorSet;
 
 
 public class LoginActivity extends AppCompatActivity {
