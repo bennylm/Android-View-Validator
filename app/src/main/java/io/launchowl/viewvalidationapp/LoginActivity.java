@@ -15,10 +15,10 @@ import android.widget.TextView;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import io.launchowl.view.validation.Criteria;
-import io.launchowl.view.validation.Observer;
-import io.launchowl.view.validation.Validator;
-import io.launchowl.view.validation.ValidatorSet;
+import io.launchowl.viewvalidationlibrary.Criteria;
+import io.launchowl.viewvalidationlibrary.Observer;
+import io.launchowl.viewvalidationlibrary.Validator;
+import io.launchowl.viewvalidationlibrary.ValidatorSet;
 
 
 public class LoginActivity extends AppCompatActivity {

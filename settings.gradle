@@ -1,1 +1,1 @@
-include ':app', ':viewvalidation'
+include ':app', ':view-validation-library'

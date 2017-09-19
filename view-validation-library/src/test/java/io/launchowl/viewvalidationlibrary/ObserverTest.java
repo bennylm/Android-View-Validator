@@ -7,8 +7,8 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import io.launchowl.view.validation.Observer;
-import io.launchowl.view.validation.Validator;
+import io.launchowl.viewvalidationlibrary.Observer;
+import io.launchowl.viewvalidationlibrary.Validator;
 
 import static org.junit.Assert.assertEquals;
 

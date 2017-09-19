@@ -1,4 +1,4 @@
-package io.launchowl.view.validation;
+package io.launchowl.viewvalidationlibrary;
 
 public interface Validation {
     void validate();

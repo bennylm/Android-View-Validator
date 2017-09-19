@@ -12,9 +12,9 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import io.launchowl.view.validation.Criteria;
-import io.launchowl.view.validation.Validator;
-import io.launchowl.view.validation.ValidatorSet;
+import io.launchowl.viewvalidationlibrary.Criteria;
+import io.launchowl.viewvalidationlibrary.Validator;
+import io.launchowl.viewvalidationlibrary.ValidatorSet;
 
 import static org.junit.Assert.*;
 import static org.powermock.api.mockito.PowerMockito.when;

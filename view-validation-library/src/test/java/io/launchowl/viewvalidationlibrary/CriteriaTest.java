@@ -1,4 +1,4 @@
-package io.launchowl.view.validation;
+package io.launchowl.viewvalidationlibrary;
 
 import android.widget.EditText;
 import android.widget.TextView;
@@ -7,9 +7,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
-import io.launchowl.view.validation.Criteria;
-import io.launchowl.view.validation.Validator;
 
 import static java.lang.Thread.sleep;
 import static org.junit.Assert.assertEquals;
