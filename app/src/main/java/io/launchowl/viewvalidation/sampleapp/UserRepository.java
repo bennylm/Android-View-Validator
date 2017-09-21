@@ -27,51 +27,13 @@ public class UserRepository {
      * @param onUuserRetrievedListener an {@link OnuserRetrievedListener}
      */
     void getUser(final String userName, final OnuserRetrievedListener onUuserRetrievedListener) {
+        try {
+            Thread.sleep(ThreadLocalRandom.current().nextInt(300, 1500));
+            onUuserRetrievedListener.onUserRetrieved(findUser(userName));
+        } catch (InterruptedException e ) {
+            e.printStackTrace();
+        }
 
-        /*
-         * Create a Handler to provide response on the main UI thread. If
-         * nUserRetrievesListener.onUserRetrieved(User user) is called
-         * on a separate thread then a FATAL EXCEPTION will occur and an
-         * exception will be thrown.
-         *
-         * In this case, android.util.AndroidRuntimeException: Animators may only be run on Looper threads.
-         *
-         * To learn about communicating with the UI thread, see "Communicating with the UI Thread":
-         * https://developer.android.com/training/multiple-threads/communicate-ui.html
-         *
-         */
-        final Handler handler = new Handler(Looper.getMainLooper()) {
-            @Override
-            public void handleMessage(Message inputMessage) {
-                onUuserRetrievedListener.onUserRetrieved(findUser(userName));
-            }
-        };
-
-
-        /*
-         * Create a Thread that will respond with the result after
-         * a random amount of time.
-         *
-         * The goal is to simulate a remote web service.
-         */
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    /* Sleep for a random number of milliseconds. Execute in a Thread to prevent
-                     * blocking Android's main  UI thread.
-                     */
-                    Thread.sleep(ThreadLocalRandom.current().nextInt(300, 1500));
-
-                    // Tell the handler to continue.
-                    Message message = handler.obtainMessage();
-                    message.sendToTarget();
-
-                } catch (InterruptedException e ) { }
-
-            }
-        });
-        thread.start();
     }
 
     /**

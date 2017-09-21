@@ -65,6 +65,10 @@ public class Validator<T extends View> implements Validation {
         });
     }
 
+    public void cancelValidation() {
+        this.criteria.cancelValidation();
+    }
+
     /**
      * Returns a collection of {@link Observer} objects that have been added via {@link #observe(Observer[])}.
      * <p>
