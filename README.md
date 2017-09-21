@@ -272,7 +272,7 @@ On the flip side, a message could display stating the username isn't available.
 
 Observers are added to the validator object like so:
 ```java
-userNameAvailableValidator.observee(userNameStatusObserver, ..., ...);
+userNameAvailableValidator.observe(userNameStatusObserver, ..., ...);
 ```
 
 #### Break it Down
