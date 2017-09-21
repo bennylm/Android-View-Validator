@@ -3,11 +3,10 @@ package io.launchowl.viewvalidationlibrary;
 import android.view.View;
 
 /**
- * This abstract class is used to observe changes to a {@link View} and notify
- * a separate view if the changes are valid.
+ * This abstract class is used to observe if a {@link View} is valid.
  * <p>
- * Observers are provided to {@link Validator} instances and are notified after
- * all conditions of a {@link Criteria} object are evaluated via the {@link Validator#validate()}
+ * Observers are added to {@link Validator} instances and are notified after
+ * all conditions of a {@link Criteria} object are tested via the {@link Validator#validate()}
  * method.
  *
  * @param <T> the type of {@link View} that needs to respond to the state of the observed view
@@ -21,18 +20,17 @@ public abstract class Observer<T extends View> {
     private final T observerView;
 
     /**
-     * Class constructor that is supplied with the view that needs to respond to
-     * the state of the observed view.
+     * Class constructor that is supplied with the view that will be udpated based on the
+     * validity of the observed view.
      *
-     * @param observerView the {@link View} that will respond to another view's state
+     * @param observerView the {@link View} that will be updated based on the observed view
      */
     public Observer(T observerView) {
         this.observerView = observerView;
     }
 
     /**
-     * Notifies the observer that the view being observed is
-     * in a valid state.
+     * Notifies the observer of the observee view's validity.
      * <p>
      * This method calls {@link #onValidationComplete(View, Validator.ValidationResult)}.
      *
@@ -44,6 +42,7 @@ public abstract class Observer<T extends View> {
 
     /**
      * Returns the {@link View} supplied to the {@link #Observer(View)} constructor.
+     *
      * @return the {@link View} supplied to the {@link #Observer(View)} constructor
      */
     T getView() {
@@ -51,8 +50,8 @@ public abstract class Observer<T extends View> {
     }
 
     /**
-     * This abstract method defines what will happen to the observer's view based upon
-     * the current state of the view being validated.
+     * This abstract method defines what will happen to the observer's view based upon the validity
+     * of the view being observed.
      * <p>
      * <pre>
      * // Assuming the <i>view</i> is a {@link android.widget.Button}

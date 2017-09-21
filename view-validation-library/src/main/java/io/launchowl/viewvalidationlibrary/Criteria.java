@@ -13,17 +13,16 @@ import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
- * This class contains a collection of {@link Condition} and.or {@link AsyncCondition} objects.
+ * This class contains a collection conditions that are tested to determine if a view is valid.
  * <p>
- * A Criteria is intended to be associated with a single {@link View}.
- * One or more {@link Condition} or {@link AsyncCondition} objects can
- * be added to the Criteria instance.
+ * A Criteria object contains one or more {@link Condition} or {@link AsyncCondition} that are added
+ * via {@link #test(Condition)} and {@link #asyncTest(AsyncCondition)}, respectively.
  * <p>
  * All conditions can be evaluated by calling the {@link Criteria#evaluate(EvalCompleteListener)}
  * method. The method will deliver a single result ({@link io.launchowl.viewvalidationlibrary.Validator.ValidationResult})
  * to the supplied {@link EvalCompleteListener}.
  *
- * @param <T> the type of {@link View} being evaluated
+ * @param <T> the type of {@link View} being validated
  */
 public class Criteria<T extends View> {
     private int asyncConditionsComplete = 0;
@@ -37,22 +36,20 @@ public class Criteria<T extends View> {
     /**
      * A condition is a single test that will return true or false.
      * <p>
-     * Conditions are intended to test a single event. Add additional
-     * conditions to a {@link Criteria} instance to test each unique
-     * event.
+     * Conditions are intended to test a single scenario. Add additiona conditions to a
+     * {@link Criteria} instance to test each unique unique scenario.
      * <p>
-     * For example, one condition could test whether a username contains
-     * valid characters. A separate condition could test whether the
-     * username contains profanity.
+     * For example, one condition could test whether a username contain valid characters. A separate
+     * condition could test whether the username contains profanity.
      *
-     * @param <T> the type of {@link View} being evaluated
+     * @param <T> the type of {@link View} being validated
      *
      * @see AsyncCondition
      */
     public interface Condition<T> {
 
         /**
-         * Perform a test using data from the view being evaluated.
+         * Perform a test using data from the view being validated.
          * <p>
          * <pre>
          *  // Assumes <i>view</i> is a {@link android.widget.TextView}
@@ -70,7 +67,7 @@ public class Criteria<T extends View> {
          *  return matcher.find();
          * }
          * </pre>
-         * @param view the {@link View} being evaluated
+         * @param view the {@link View} being validated
          *
          * @return true or false depending on whether the test passed
          */
@@ -81,17 +78,17 @@ public class Criteria<T extends View> {
      * An asynchronous condition is a single test that performs an asynchronous operation and
      * then returns a true or false value by invoking {@link #complete(boolean)}.
      * <p>
-     * Conditions are intended to test a single event. Add additional conditions to a
-     * {@link Criteria} instance to test each unique event.
+     * Conditions are intended to test a single scenario. Add additional conditions to a
+     * {@link Criteria} instance to test each unique scenario.
      * <p>
-     * For example, the asynchronous operation could evaluate if a username is available by
+     * For example, the asynchronous operation could check if a username is available by
      * querying a web service.
      * <p>
      * The {@link #complete(boolean)} method should be called in the overridden
      * {@link #evaluate(Object)} method to notify the Criteria object that the
      * asynchronous operation is complete.
      *
-     * @param <T> the type of {@link View} being evaluated
+     * @param <T> the type of {@link View} being validated
      */
     public static abstract class AsyncCondition<T> {
         private boolean cancelled = false;
@@ -178,7 +175,7 @@ public class Criteria<T extends View> {
          * Executes {@link #evaluate(Object)} inside of a new {@link Thread}.
          *
          * @param criteria the instance of the enclosing {@link Criteria} object
-         * @param view the {@link View} being evaluated
+         * @param view the {@link View} being validated
          */
         final void initEvaluate(final Criteria criteria, final T view) {
             cancelled = false;
@@ -201,7 +198,7 @@ public class Criteria<T extends View> {
 
         /**
          * Returns a new message from the global message pool.
-         *
+         * <p>
          * For testing.
          *
          * @return
@@ -215,9 +212,8 @@ public class Criteria<T extends View> {
 
     /**
      * This interface is supplied to the {@link Criteria#evaluate(EvalCompleteListener)}
-     * method and receives the final validation result
-     * after all conditions in a criteria object have been individually
-     * tested.
+     * method and receives the final validation result after all conditions in a criteria object
+     * have been completed their tests.
      */
     public interface EvalCompleteListener {
 
@@ -231,9 +227,9 @@ public class Criteria<T extends View> {
     }
 
     /**
-     * Class constructor specifying the view being evaluated.
+     * Class constructor specifying the view being validated.
      *
-     * @param validatedView the {@link View} being evaluated
+     * @param validatedView the {@link View} being validated
      */
     public Criteria(T validatedView) {
         this.validatedView = validatedView;
@@ -262,8 +258,8 @@ public class Criteria<T extends View> {
     /**
      * Adds a {@link Condition} to be tested.
      * <p>
-     * For example, the asynchronous operation could evaluate whether a
-     * username contains valid characters.
+     * For example, the synchronous operation could evaluate whether a username contains valid
+     * characters.
      *
      * @param condition a condition that can be tested immediately
      * @return this {@link Criteria} instance
@@ -278,8 +274,8 @@ public class Criteria<T extends View> {
 
 
     /**
-     * Evaluates all {@link Condition} and {@link AsyncCondition} objects
-     * associated with this instance.
+     * Evaluates all {@link Condition} and {@link AsyncCondition} objects associated with
+     * this instance.
      *
      * @param evalCompleteListener an {@link EvalCompleteListener} that will handle the final result
      */
@@ -358,8 +354,8 @@ public class Criteria<T extends View> {
 
     /**
      * This method is called by {@link #evaluate(EvalCompleteListener)} and/or
-     * {@link #asyncConditionComplete(boolean)} after all synchronous and/or
-     * asynchronous conditions have been evaluated.
+     * {@link #asyncConditionComplete(boolean)} after all synchronous and/or asynchronous conditions
+     * have completed their tests.
      */
     private void complete() {
         if (this.asyncConditions.size() == asyncConditionsComplete) {
@@ -370,8 +366,9 @@ public class Criteria<T extends View> {
 
     /**
      * This method is called by {@link #evaluate(EvalCompleteListener)} or
-     * {@link #asyncConditionComplete(boolean)} to set the {@link io.launchowl.viewvalidationlibrary.Validator.ValidationResult}
-     * value supplied to the {@link EvalCompleteListener}.
+     * {@link #asyncConditionComplete(boolean)} to set the {
+     * @link io.launchowl.viewvalidationlibrary.Validator.ValidationResult} value supplied to
+     * the {@link EvalCompleteListener}.
      *
      * @param result the result of testing the condition
      */

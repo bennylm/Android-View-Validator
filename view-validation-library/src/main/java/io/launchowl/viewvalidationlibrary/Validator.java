@@ -14,9 +14,8 @@ import java.util.Set;
  * alleviates the {@link android.app.Activity} from changing state of multiple views
  * and hands it off the {@link Observer} objects.
  * <p>
- * A {@link Criteria} object supplied to a validator object
- * contains all the conditions that must be tested
- * in order to determine if a view is in a valid state.
+ * A {@link Criteria} object supplied to a validator object contains all the conditions that must
+ * be tested in order to determine if a view is valid.
  * <p>
  * The state of the view under test is communicated to all {@link Observer} instances listening
  * as a {@link ValidationResult} value.
@@ -53,7 +52,7 @@ public class Validator<T extends View> implements Validation {
     }
 
     /**
-     * Evaluate all conditions that belong to the {@link Criteria} object supplied to the {@link #Validator(Criteria)} constructor.
+     * Evaluate all conditions that belong to the {@link Criteria} object.
      */
     @Override
     public void validate() {
