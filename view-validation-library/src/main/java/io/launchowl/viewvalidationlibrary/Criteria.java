@@ -1,10 +1,16 @@
 package io.launchowl.viewvalidationlibrary;
 
+import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.view.View;
 
+import java.net.URL;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * This class contains a collection of {@link Condition} and.or {@link AsyncCondition} objects.
@@ -26,6 +32,7 @@ public class Criteria<T extends View> {
     final private T validatedView;
     final private Set<Condition<T>> conditions;
     final private Set<AsyncCondition<T>> asyncConditions;
+    final private Criteria<T> criteria;
 
     /**
      * A condition is a single test that will return true or false.
@@ -43,8 +50,9 @@ public class Criteria<T extends View> {
      * @see AsyncCondition
      */
     public interface Condition<T> {
+
         /**
-         * Perform a test using information from the view being evaluated.
+         * Perform a test using data from the view being evaluated.
          * <p>
          * <pre>
          *  // Assumes <i>view</i> is a {@link android.widget.TextView}
@@ -70,26 +78,139 @@ public class Criteria<T extends View> {
     }
 
     /**
-     * An asynchronous condition is a single test that performs an
-     * asynchronous operation and then returns a true or false value to the supplied
-     * {@link AsyncConditionCompletionListener}.
+     * An asynchronous condition is a single test that performs an asynchronous operation and
+     * then returns a true or false value by invoking {@link #complete(boolean)}.
      * <p>
-     * Conditions are intended to test a single event. Add additional
-     * conditions to a {@link Criteria} instance to test each unique
-     * event.
+     * Conditions are intended to test a single event. Add additional conditions to a
+     * {@link Criteria} instance to test each unique event.
      * <p>
-     * For example, one condition could test whether a username contains
-     * valid characters. A separate condition could test whether the
-     * username contains profanity.
+     * For example, the asynchronous operation could evaluate if a username is available by
+     * querying a web service.
+     * <p>
+     * The {@link #complete(boolean)} method should be called in the overridden
+     * {@link #evaluate(Object)} method to notify the Criteria object that the
+     * asynchronous operation is complete.
+     *
      * @param <T> the type of {@link View} being evaluated
      */
-    public interface AsyncCondition<T extends View> {
+    public static abstract class AsyncCondition<T> {
+        private boolean cancelled = false;
+        private AsyncTask asyncTask;
+        private Criteria criteria;
+        private final Handler handler;
+        private Thread thread;
+        private Message message;
+
         /**
-         * Perform an asynchronous test using information from the view being evaluated.
+         * Class constructor that creates a new {@link Handler} which will be used for communicating
+         * the response to the main UI thread after the asynchronous operation is complete.
+         * <p>
+         * To learn about communicating with the UI thread, see "Communicating with the UI Thread":
+         * https://developer.android.com/training/multiple-threads/communicate-ui.html
          *
+         * @see #asyncConditionComplete(boolean)
+         */
+        public AsyncCondition() {
+            this.handler = new Handler(Looper.getMainLooper()) {
+                @Override
+                public void handleMessage(Message inputMessage) {
+                    if (!cancelled) {
+                        criteria.asyncConditionComplete((boolean) inputMessage.obj);
+                    }
+                }
+            };
+        }
+
+        /**
+         * Notifies the Criteria object that the asynchronous operation is complete.
+         * <p>
+         * This method should be called be called in the overridden {@link #evaluate(Object)}
+         * method.
+         *
+         * @param result true if the test passed, otherwise false
+         */
+        protected final void complete(boolean result) {
+
+            // Send the result to the handler which will notify the Criteria object on the main UI thread.
+            this.message = makeMessage();
+            message.obj = result;
+            message.sendToTarget();
+        }
+
+        /**
+         * Performs an asynchronous test using information from the view being evaluated.
+         *
+         * @param asyncConditionCompletionListener an {@link AsyncConditionCompletionListener}
          * @param view the {@link View} being evaluated
          */
-        void evaluate(Criteria.AsyncConditionCompletionListener asyncConditionCompletionListener, T view);
+
+        /**
+         * Perform a test using data from the view being evaluated.
+         * <p>
+         * Any code included in this method will be executed on a separate thread. After the
+         * data has been evaluated call {@link #complete(boolean)} to notify the Criteria
+         * object that the asynchronous operation is complete.
+         * <p>
+         * If {@link #complete(boolean)} is not executed, then
+         * {@link EvalCompleteListener#onComplete(Validator.ValidationResult)} will never be invoked.
+         *
+         * @param view
+         */
+        protected abstract void evaluate(T view);
+
+        /**
+         * This method is called if {@link Criteria#cancelValidation()} ()} is invoked.
+         */
+        protected abstract void onCancelled();
+
+        /**
+         * Cancels the asynchronous operation.
+         */
+        final void cancel() {
+            cancelled = true;
+            if (this.thread != null) {
+                this.thread.interrupt();
+            }
+            this.onCancelled();
+        }
+
+        /**
+         * Executes {@link #evaluate(Object)} inside of a new {@link Thread}.
+         *
+         * @param criteria the instance of the enclosing {@link Criteria} object
+         * @param view the {@link View} being evaluated
+         */
+        final void initEvaluate(final Criteria criteria, final T view) {
+            cancelled = false;
+            this.criteria = criteria;
+
+            // Kill the current thread to prevent a race condition.
+            if (this.thread != null) {
+                this.thread.interrupt();
+            }
+
+
+            this.thread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    evaluate(view);
+                }
+            });
+            thread.start();
+        }
+
+        /**
+         * Returns a new message from the global message pool.
+         *
+         * For testing.
+         *
+         * @return
+         *
+         * @see Handler#obtainMessage()
+         */
+        Message makeMessage() {
+            return this.handler.obtainMessage();
+        }
     }
 
     /**
@@ -99,6 +220,7 @@ public class Criteria<T extends View> {
      * tested.
      */
     public interface EvalCompleteListener {
+
         /**
          * This method is called after all conditions of the criteria
          * have been tested.
@@ -117,6 +239,7 @@ public class Criteria<T extends View> {
         this.validatedView = validatedView;
         this.conditions = new HashSet<>();
         this.asyncConditions = new HashSet<>();
+        this.criteria = this;
     }
 
     /**
@@ -163,20 +286,39 @@ public class Criteria<T extends View> {
     void evaluate(EvalCompleteListener evalCompleteListener) {
         this.evalCompleteListener = evalCompleteListener;
 
-        // Perform all synchronous evaluations first
+        // Initiate all asynchronous evaluations.
+        evaluateAsyncConditions();
+
+        // Perform all synchronous evaluations.
+        evaluateConditions();
+
+        // Only complete if there aren't any AsyncCondition objects still running.
+        if (this.asyncConditions.size() == 0) {
+            complete();
+        }
+    }
+
+    /**
+     * Evaluate all synchronous conditions.
+     */
+    void evaluateConditions() {
         for (Condition<T> condition : this.conditions) {
             setValidationResult(condition.evaluate(this.validatedView));
         }
+    }
 
-        // Initiate all asynchronous evaluations
+    /**
+     * Initiate all asynchronous conditions.
+     */
+    void evaluateAsyncConditions() {
         for (AsyncCondition<T> asyncCondition : this.asyncConditions) {
-            asyncCondition.evaluate(new AsyncConditionCompletionListener(this), this.validatedView);
+            asyncCondition.initEvaluate(this, this.validatedView);
         }
+    }
 
-        // Only complete if there aren't any AsyncCondition objects
-        // still running
-        if (this.asyncConditions.size() == 0) {
-            complete();
+    void cancelValidation() {
+        for (AsyncCondition<T> asyncCondition : this.asyncConditions) {
+            asyncCondition.cancel();
         }
     }
 
@@ -201,14 +343,13 @@ public class Criteria<T extends View> {
     }
 
     /**
-     * This method is called when {@link AsyncConditionCompletionListener#complete(boolean)}
-     * is invoked.
+     * This method is called when {@link AsyncCondition#complete(boolean)} is invoked.
      *
      * @param result the result of testing the condition
      *
      * @see AsyncCondition
      */
-    private void asyncConditionComplete(boolean result) {
+    void asyncConditionComplete(boolean result) {
         this.asyncConditionsComplete++;
         setValidationResult(result);
 
@@ -235,6 +376,8 @@ public class Criteria<T extends View> {
      * @param result the result of testing the condition
      */
     private void setValidationResult(boolean result) {
+
+        // Only set to Invalid if the test didn't pass since the default value is Valid.
         if (!result) {
             this.validationResult = Validator.ValidationResult.Invalid;
         }
@@ -246,40 +389,5 @@ public class Criteria<T extends View> {
     private void reset() {
         this.asyncConditionsComplete = 0;
         this.validationResult = Validator.ValidationResult.Valid;
-    }
-
-    /**
-     * This class is responsible for notifying the {@link Criteria} object
-     * that an {@link AsyncCondition} has completed its evaluation.
-     * <p>
-     * An instance of this class is supplied to the {@link AsyncCondition#evaluate(AsyncConditionCompletionListener, View)}
-     * method.
-     *
-     * @see AsyncCondition
-     */
-    public static class AsyncConditionCompletionListener {
-        final Criteria criteria;
-
-        /**
-         * Class constructor that is supplied an instance of this
-         * {@link Criteria}.
-         *
-         * @param criteria an instance of this {@link Criteria}
-         */
-        AsyncConditionCompletionListener(Criteria criteria) {
-            this.criteria = criteria;
-        }
-
-        /**
-         * Notifies the {@link Criteria} instance that an asynchronous
-         * condition evaluation is complete.
-         *
-         * @param result the result of the asynchronous test
-         *
-         * @see AsyncCondition
-         */
-        public void complete(boolean result) {
-            this.criteria.asyncConditionComplete(result);
-        }
     }
 }

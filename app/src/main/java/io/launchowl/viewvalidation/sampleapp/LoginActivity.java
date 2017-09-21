@@ -56,18 +56,24 @@ public class LoginActivity extends AppCompatActivity {
          * a response in <=1500ms to simulate querying a remote service.
          */
         EditText userNameEditText = (EditText) findViewById(R.id.user_name);
-        final Validator<EditText> userNameAvailableValidator = new Validator<>(new Criteria<EditText>(userNameEditText)
+        final Validator<EditText> userNameAvailableValidator = new Validator<EditText>(new Criteria<EditText>(userNameEditText)
             .asyncTest(new Criteria.AsyncCondition<EditText>() {
+
                 @Override
-                public void evaluate(final Criteria.AsyncConditionCompletionListener asyncConditionCompletionListener, EditText view) {
+                protected void evaluate(EditText view) {
                     UserRepository userRepository = new UserRepository();
                     userRepository.getUser(view.getText().toString(), new UserRepository.OnuserRetrievedListener() {
                         @Override
                         public void onUserRetrieved(User user) {
                             // The username is available (returns true) if no user is found.
-                            asyncConditionCompletionListener.complete(user == null);
+                            complete(user == null);
                         }
                     });
+                }
+
+                @Override
+                protected void onCancelled() {
+                    resetViews();
                 }
             })
         );
@@ -199,7 +205,7 @@ public class LoginActivity extends AppCompatActivity {
                      */
                     validatorSet.validate();
                 } else {
-
+                    validatorSet.cancelValidation();
                     // Reset the views if the input is not at least 4 characters.
                     resetViews();
                 }
@@ -211,9 +217,9 @@ public class LoginActivity extends AppCompatActivity {
      * Reset the views to their default state.
      */
     void resetViews() {
-        ((EditText) findViewById(R.id.user_name)).setError(null);
-        ((TextView) findViewById(R.id.username_status)).setText("");
-        ((TextView) findViewById(R.id.username_status)).setVisibility(View.VISIBLE);
+        ((TextInputLayout) findViewById(R.id.user_name_layout)).setError(null);
+        findViewById(R.id.username_status).setVisibility(View.VISIBLE);
+        ((TextView) findViewById(R.id.username_status)).setText(getString(R.string.empty_string));
         findViewById(R.id.continue_button).setEnabled(false);
     }
 }

@@ -94,4 +94,10 @@ public class ValidatorSet implements Validation {
             validator.validate();
         }
     }
+
+    public void cancelValidation() {
+        for (Validator validator : validators) {
+            validator.cancelValidation();
+        }
+    }
 }
