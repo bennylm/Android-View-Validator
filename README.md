@@ -24,6 +24,7 @@ Based on the input provided in the EditText view you might want to display a mes
 ## Getting Started
 
 #### Option 1
+***
 1. Clone this repository.
 ```sh
 $ git clone https://github.com/bennylm/Android-View-Validator.git
@@ -41,7 +42,8 @@ $ git clone https://github.com/bennylm/Android-View-Validator.git
 | orange | |
 | strawberry | |
 
-#### Option 1
+#### Option 2
+***
 1. Clone this repository.
 ```sh
 $ git clone https://github.com/bennylm/Android-View-Validator.git
