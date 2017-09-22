@@ -19,7 +19,7 @@ When you're creating forms in an Android Activity you might find yourself needin
 
 Based on the input provided in the EditText view you might want to display a message informing the user that the username is available or not available by querying a web service. You might also want to display an error message ([TextInputLayout.setError(CharSequence error)](https://developer.android.com/reference/android/support/design/widget/TextInputLayout.html#setError(java.lang.CharSequence))) if the input contains unacceptable characters (*!@#$%^&*).
 
-![Sample App(/images/view-validation-app.gif)
+![Sample App](/images/view-validation-app-original.gif)
 
 ## Getting Started
 
@@ -31,14 +31,15 @@ $ git clone https://github.com/bennylm/Android-View-Validator.git
 2. Open the project in Android Studio.
 3. Run app on a device or AVD.
 4. Type different usernames to see messages appear.
-Must Contain One of These Words | Existing Usernames
------------- | -------------
-apple | coolblueberry
-banana | happyorange
-blueberry | iceapple
-kiwi  | realkiwi
-orange |
-strawberry |
+
+| Must Contain One of These Words | Existing Usernames |
+| ------------ | -------------
+| apple | coolblueberry |
+| banana | happyorange |
+| blueberry | iceapple |
+| kiwi  | realkiwi |
+| orange | |
+| strawberry | |
 
 #### Option 1
 1. Clone this repository.
