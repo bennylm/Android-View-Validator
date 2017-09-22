@@ -79,17 +79,6 @@ public class LoginActivity extends AppCompatActivity {
         );
 
         /*
-         * Create an observer for the continue button that will enable/disable it based
-         * on the username field containing valid data.
-         */
-        Observer<Button> continueButtonObserver = new Observer<Button>((Button) findViewById(R.id.continue_button)) {
-            @Override
-            protected void onValidationComplete(Button view, Validator.ValidationResult validationResult) {
-                view.setEnabled(validationResult == Validator.ValidationResult.Valid);
-            }
-        };
-
-        /*
          * Create an observer for the username status message.
          */
         Observer<TextView> userNameStatusObserver = new Observer<TextView>((TextView) findViewById(R.id.username_status)) {
@@ -113,7 +102,7 @@ public class LoginActivity extends AppCompatActivity {
         };
 
         // Add the observers
-        userNameAvailableValidator.observe(userNameStatusObserver, continueButtonObserver);
+        userNameAvailableValidator.observe(userNameStatusObserver);
 
         /*
          * Create a Validator for the username field that will
@@ -146,10 +135,6 @@ public class LoginActivity extends AppCompatActivity {
         );
 
         userNameCompliesValidator.observe(
-
-                // Reuse existing behavior from the observer representing the continue button.
-                continueButtonObserver,
-
                 /*
                  * This is a new observer for the username status TextView. If the username doesn't meet
                  * the expected criteria then we want to hide the status completely, so we're not
@@ -220,7 +205,6 @@ public class LoginActivity extends AppCompatActivity {
         ((TextInputLayout) findViewById(R.id.user_name_layout)).setError(null);
         findViewById(R.id.username_status).setVisibility(View.VISIBLE);
         ((TextView) findViewById(R.id.username_status)).setText(getString(R.string.empty_string));
-        findViewById(R.id.continue_button).setEnabled(false);
     }
 }
 
