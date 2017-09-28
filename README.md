@@ -6,7 +6,7 @@ The Android View Validator enables a developer to validate the content of a [Vie
 >- **android-view-validation** is an [Android Library](https://developer.android.com/studio/projects/android-library.html) that contains all the logic for validating and observing views. This [module can be added](https://developer.android.com/studio/projects/android-library.html#AddDependency) to any existing Android Studio project.
 >- **app** is a *Phone & Tablet* module that contains a sample app that uses the *android-view-validation* module.
 
-> **Note:** A **Java 8 version** of this project is available here. You will need to open the project with [Android Studio Preview](https://developer.android.com/studio/preview/index.html).
+> **Note:** A **Java 8 version** of this project is available here. You will need to open the project with [Android Studio Preview](https://developer.android.com/studio/preview/index.html). 
 
 ## Project Goal
 At times you might need to update the state of a View (ex: provide a helpful user message) based on the state of a different View (ex: user input in an ```EditText```) in the same activity. The goal of this project is to isolate the task of validating views from the task of updating any dependent views. It also alleviates the Activity from the responsibility of performing validation by allowing more appropriate classes to handle the work.
