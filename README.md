@@ -442,6 +442,6 @@ Adding and removing an element from any part of the process is straightforward:
 >- Add/remove/change a condition
 >- Add a new validator
 
-The other point I look about this approach is that we don't extend any of Android's ```View``` subclasses. We can handle any ```View``` as a type argument supplied to the validator and observer classes. 
+The other point I like about this approach is that we don't extend any of Android's ```View``` subclasses. We can handle any ```View``` subclass as a type argument supplied to the validator and observer classes. 
 
 On the downside...it becomes a bit verbose. If needed, a separate class could be created.
