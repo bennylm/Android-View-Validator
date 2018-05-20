@@ -111,10 +111,10 @@ public class LoginActivity extends AppCompatActivity {
         final Validator<EditText> userNameCompliesValidator = new Validator<>(new Criteria<EditText>(userNameEditText)
                 // Make sure it doesn't contain special characters
                 .test(new Criteria.Condition<EditText>() {
-                    @Override
-                    public boolean evaluate(EditText view) {
-                        return Pattern.matches("^[a-zA-Z0-9]*$", view.getText().toString());
-                    }
+                              @Override
+                              public boolean evaluate(EditText view) {
+                                  return Pattern.matches("^[a-zA-Z0-9]*$", view.getText().toString());
+                              }
                 // Make sure it contains the name of a popular fruit
                 }).test(new Criteria.Condition<EditText>() {
                     @Override
